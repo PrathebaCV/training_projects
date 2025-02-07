@@ -1,0 +1,26 @@
+import requests
+from bs4 import BeautifulSoup
+
+url = "https://quotes.toscrape.com/"
+response = requests.get(url)
+soup = BeautifulSoup(response.text, "html.parser")
+
+# Extract quotes and authors
+quotes = soup.find_all("div", class_="quote")
+
+# Open a file to save the output
+with open("quotes_output.txt", "w", encoding="utf-8") as file:
+    for quote in quotes:
+        text = quote.find("span", class_="text").get_text(strip=True)
+        author = quote.find("small", class_="author").get_text(strip=True)
+
+        # Format the output with a pipeline separator
+        output_line = f"{text} | {author} \n"
+
+        # Write to file
+        file.write(output_line)
+
+        # Also print to console (optional)
+        print(output_line.strip())
+
+print("\n✅ Scraping complete! Quotes saved in 'quotes_output.txt'.")
